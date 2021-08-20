@@ -7,6 +7,7 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -30,6 +31,28 @@ namespace Ngsa.Application
         public static int Main(string[] args)
         {
             DisplayAsciiArt(args);
+
+            DateTime until = DateTime.Now.AddSeconds(90);
+
+            Dapr.Client.DaprClient client = new Dapr.Client.DaprClientBuilder().Build();
+
+            while (DateTime.Now < until)
+            {
+                try
+                {
+                    var data = client.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
+                    Console.WriteLine($"CosmosCollection: {data["CosmosCollection"]}");
+                    Console.WriteLine($"CosmosDatabase: {data["CosmosDatabase"]}");
+                    Console.WriteLine($"CosmosKey: {data["CosmosKey"]}");
+                    Console.WriteLine($"CosmosUrl: {data["CosmosUrl"]}");
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("retrying dapr");
+                    Thread.Sleep(100);
+                }
+            }
 
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
