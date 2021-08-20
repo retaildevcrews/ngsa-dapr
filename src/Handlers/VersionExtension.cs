@@ -50,7 +50,6 @@ namespace Ngsa.Middleware
         /// Middleware extension method to handle /version request
         /// </summary>
         /// <param name="builder">this IApplicationBuilder</param>
-        /// <param name="burstServiceName">service name for bursting</param>
         /// <returns>IApplicationBuilder</returns>
         public static IApplicationBuilder UseVersion(this IApplicationBuilder builder)
         {
@@ -68,8 +67,6 @@ namespace Ngsa.Middleware
                 {
                     // return the version info
                     context.Response.ContentType = "text/plain";
-
-                    CpuCounter.AddBurstHeader(context);
 
                     await context.Response.Body.WriteAsync(responseBytes).ConfigureAwait(false);
                 }

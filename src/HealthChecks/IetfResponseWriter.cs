@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Ngsa.Application.Model;
-using Ngsa.Middleware;
 
 namespace Ngsa.Application
 {
@@ -36,8 +35,8 @@ namespace Ngsa.Application
             }
 
             // create the dictionaries
-            Dictionary<string, object> result = new Dictionary<string, object>();
-            Dictionary<string, object> checks = new Dictionary<string, object>();
+            Dictionary<string, object> result = new ();
+            Dictionary<string, object> checks = new ();
 
             // add header values
             result.Add("status", IetfCheck.ToIetfStatus(healthReport.Status));
@@ -88,11 +87,9 @@ namespace Ngsa.Application
             }
 
             // Convert the HealthCheckResult to a HealthReport
-            HealthReport rpt = new HealthReport(
+            HealthReport rpt = new (
                 new Dictionary<string, HealthReportEntry> { { CosmosHealthCheck.ServiceId, new HealthReportEntry(res.Status, res.Description, totalTime, res.Exception, res.Data) } },
                 totalTime);
-
-            CpuCounter.AddBurstHeader(httpContext);
 
             // call the response writer
             return IetfResponseWriter(httpContext, rpt);

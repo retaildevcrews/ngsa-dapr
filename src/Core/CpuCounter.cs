@@ -73,17 +73,6 @@ namespace Ngsa.Application
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Insert bursting headers
-        /// </summary>
-        public static void AddBurstHeader(HttpContext context)
-        {
-            if (App.Config.BurstHeader)
-            {
-                context.Response.Headers.Add(CapacityHeader, $"service={App.Config.BurstService}, current-load={CpuPercent}, target-load={App.Config.BurstTarget}, max-load={App.Config.BurstMax}");
-            }
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

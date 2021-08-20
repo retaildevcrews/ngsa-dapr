@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
 
 ### copy the source and tests
-COPY . /src
+COPY src /src
 
 WORKDIR /src
 
@@ -32,4 +32,4 @@ USER ngsa
 ### copy the app
 COPY --from=build /app .
 
-ENTRYPOINT [ "dotnet",  "aspnetapp.dll" ]
+ENTRYPOINT [ "dotnet",  "Ngsa.Dapr.dll" ]

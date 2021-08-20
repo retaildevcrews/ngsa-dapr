@@ -112,7 +112,7 @@ namespace Ngsa.Application
                     c.SwaggerEndpoint(swaggerPath, SwaggerTitle);
                     c.RoutePrefix = string.Empty;
                 })
-                .UseSwaggerReplaceJson("swagger.json", App.Config.UrlPrefix)
+                .UseSwaggerReplaceJson("wwwroot/swagger.json", App.Config.UrlPrefix)
                 .UseVersion();
         }
 

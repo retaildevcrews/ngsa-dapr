@@ -8,7 +8,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Ngsa.Application.DataAccessLayer;
 using Ngsa.Application.Model;
-using Ngsa.Middleware;
 
 namespace Ngsa.Application.Controllers
 {
@@ -54,13 +53,11 @@ namespace Ngsa.Application.Controllers
 
             HttpContext.Items.Add(typeof(HealthCheckResult).ToString(), res);
 
-            ContentResult result = new ContentResult
+            ContentResult result = new ()
             {
                 Content = IetfCheck.ToIetfStatus(res.Status),
                 StatusCode = res.Status == HealthStatus.Unhealthy ? (int)System.Net.HttpStatusCode.ServiceUnavailable : (int)System.Net.HttpStatusCode.OK,
             };
-
-            CpuCounter.AddBurstHeader(Response.HttpContext);
 
             return result;
         }
@@ -91,7 +88,7 @@ namespace Ngsa.Application.Controllers
         /// <returns>HealthCheckResult</returns>
         private async Task<HealthCheckResult> RunCosmosHealthCheck()
         {
-            CosmosHealthCheck chk = new CosmosHealthCheck(hcLogger, dal);
+            CosmosHealthCheck chk = new (hcLogger, dal);
 
             return await chk.CheckHealthAsync(new HealthCheckContext()).ConfigureAwait(false);
         }

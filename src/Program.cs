@@ -75,14 +75,14 @@ namespace Ngsa.Application
         {
             if (args != null)
             {
-                ReadOnlySpan<string> cmd = new ReadOnlySpan<string>(args);
+                ReadOnlySpan<string> cmd = new (args);
 
                 if (!cmd.Contains("--version") &&
                     (cmd.Contains("-h") ||
                     cmd.Contains("--help") ||
                     cmd.Contains("--dry-run")))
                 {
-                    const string file = "ascii-art.txt";
+                    const string file = "Core/ascii-art.txt";
 
                     try
                     {
@@ -109,7 +109,7 @@ namespace Ngsa.Application
         // Create a CancellationTokenSource that cancels on ctl-c or sigterm
         private static CancellationTokenSource SetupSigTermHandler(IWebHost host, NgsaLog logger)
         {
-            CancellationTokenSource ctCancel = new CancellationTokenSource();
+            CancellationTokenSource ctCancel = new ();
 
             Console.CancelKeyPress += async (sender, e) =>
             {
@@ -141,6 +141,7 @@ namespace Ngsa.Application
             // configure the web host builder
             IWebHostBuilder builder = WebHost.CreateDefaultBuilder()
                 .UseUrls($"http://*:{Config.Port}/")
+                .UseContentRoot("wwwroot")
                 .UseStartup<Startup>()
                 .UseShutdownTimeout(TimeSpan.FromSeconds(10))
                 .ConfigureLogging(logger =>

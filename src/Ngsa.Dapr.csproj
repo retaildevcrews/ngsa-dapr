@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Ngsa.Application</RootNamespace>
-    <AssemblyName>aspnetapp</AssemblyName>
-    <VersionPrefix>0.4.0</VersionPrefix>
+    <AssemblyName>Ngsa.Dapr</AssemblyName>
+    <VersionPrefix>0.1.0</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
     <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -23,18 +23,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="src\stylecop.json" />
+    <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="src\.editorconfig" />
+    <None Include=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="prometheus-net.AspNetCore" Version="4.1.1" />
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
+    <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
     <PackageReference Include="System.Runtime.Caching" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.18.0" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.20.1" />
     <PackageReference Include="Microsoft.CorrelationVector" Version="1.0.42" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -44,8 +44,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.4" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.5" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.1.5" />
     <PackageReference Include="lucene.net" Version="4.8.0-beta00014" />
     <PackageReference Include="lucene.net.analysis.common" Version="4.8.0-beta00014" />
   </ItemGroup>
@@ -59,15 +59,15 @@
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 
-    <None Include="ascii-art.txt">
+    <None Include="Core\ascii-art.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
-    <None Include="swagger.json">
+    <None Include="wwwroot\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
-    <None Include="src\data\**">
+    <None Include="data\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
