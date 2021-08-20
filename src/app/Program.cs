@@ -48,7 +48,7 @@ namespace Ngsa.Application
             {
                 Dapr.Client.DaprClient client = new Dapr.Client.DaprClientBuilder().Build();
 
-                for (int i = 0; i < 10; i++)
+                while (true)
                 {
                     try
                     {
@@ -62,7 +62,7 @@ namespace Ngsa.Application
                     catch
                     {
                         Console.WriteLine("retrying dapr");
-                        Thread.Sleep(100);
+                        Thread.Sleep(1000);
                     }
                 }
             }

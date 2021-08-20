@@ -10,7 +10,6 @@ help :
 
 build :
 	# building and pushing docker image
-	@docker system prune -f
 	@docker build . -t k3d-registry.localhost:5000/ngsa-dapr:local
 	@docker push k3d-registry.localhost:5000/ngsa-dapr:local
 
@@ -36,8 +35,8 @@ jumpbox :
 logs :
 	kubectl logs --selector=app=ngsa -c app
 
-deploy :
-	# delete the app
+deploy : build
+	# delete the app (ignore any not found errors)
 	@-kubectl delete -f deploy/ngsa.yaml
 
 	# deploy the app
