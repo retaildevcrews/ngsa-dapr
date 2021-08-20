@@ -65,7 +65,8 @@ jobs:
                 sleep 1
                 ((wait_time=wait_time+1))
             done
-
+            
+            cd webv
             webv -s "http://localhost:8080" --max-errors 1 -f baseline.json
         
     - name: Docker Tag and Push
