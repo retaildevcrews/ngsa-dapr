@@ -7,7 +7,7 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
+using Dapr.Client;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -22,6 +22,7 @@ namespace Ngsa.Application
     {
         // App configuration values
         public static Config Config { get; } = new Config();
+        public static DaprClient DaprClient { get; } = new DaprClientBuilder().Build();
 
         /// <summary>
         /// Main entry point
@@ -46,13 +47,11 @@ namespace Ngsa.Application
             // TODO - move this - testing dapr access
             if (Config.Dapr)
             {
-                Dapr.Client.DaprClient client = new Dapr.Client.DaprClientBuilder().Build();
-
                 while (true)
                 {
                     try
                     {
-                        var data = client.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
+                        var data = DaprClient.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
                         Console.WriteLine($"CosmosCollection: {data["CosmosCollection"]}");
                         Console.WriteLine($"CosmosDatabase: {data["CosmosDatabase"]}");
                         Console.WriteLine($"CosmosKey: length {data["CosmosKey"].Length}");
