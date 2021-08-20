@@ -141,6 +141,7 @@ namespace Ngsa.Application
             // configure the web host builder
             IWebHostBuilder builder = WebHost.CreateDefaultBuilder()
                 .UseUrls($"http://*:{Config.Port}/")
+                .UseContentRoot("wwwroot")
                 .UseStartup<Startup>()
                 .UseShutdownTimeout(TimeSpan.FromSeconds(10))
                 .ConfigureLogging(logger =>

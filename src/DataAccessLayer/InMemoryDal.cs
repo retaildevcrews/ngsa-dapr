@@ -508,7 +508,7 @@ namespace Ngsa.Application.DataAccessLayer
         private static List<Actor> LoadActors(JsonSerializerOptions options)
         {
             // load the data from the json file
-            return JsonSerializer.Deserialize<List<Actor>>(File.ReadAllText("src/data/actors.json"), options);
+            return JsonSerializer.Deserialize<List<Actor>>(File.ReadAllText("data/actors.json"), options);
         }
 
         // load genre list from json file
@@ -517,7 +517,7 @@ namespace Ngsa.Application.DataAccessLayer
             List<string> genres = new List<string>();
 
             // load the data from the json file
-            List<Genre> list = JsonSerializer.Deserialize<List<Genre>>(File.ReadAllText("src/data/genres.json"), options);
+            List<Genre> list = JsonSerializer.Deserialize<List<Genre>>(File.ReadAllText("data/genres.json"), options);
 
             // Convert Genre object to List<string> per API spec
             foreach (Genre g in list)
@@ -533,7 +533,7 @@ namespace Ngsa.Application.DataAccessLayer
         // load Movie List from json file
         private static List<Movie> LoadMovies(JsonSerializerOptions options)
         {
-            return JsonSerializer.Deserialize<List<Movie>>(File.ReadAllText("src/data/movies.json"), options);
+            return JsonSerializer.Deserialize<List<Movie>>(File.ReadAllText("data/movies.json"), options);
         }
     }
 }

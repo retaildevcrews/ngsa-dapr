@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Ngsa.Application</RootNamespace>
-    <AssemblyName>aspnetapp</AssemblyName>
-    <VersionPrefix>0.4.0</VersionPrefix>
+    <AssemblyName>Ngsa.Dapr</AssemblyName>
+    <VersionPrefix>0.1.0</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
     <Copyright>Copyright (c) Microsoft Corporation. All rights reserved.</Copyright>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
@@ -23,11 +23,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalFiles Include="src\stylecop.json" />
+    <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="src\.editorconfig" />
+    <None Include=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,15 +59,15 @@
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 
-    <None Include="ascii-art.txt">
+    <None Include="Core\ascii-art.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
-    <None Include="swagger.json">
+    <None Include="wwwroot\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
-    <None Include="src\data\**">
+    <None Include="data\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
 
