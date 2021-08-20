@@ -55,7 +55,7 @@ namespace Ngsa.Middleware.Validation
         /// <returns>link to doc</returns>
         public static string GetErrorLink(string path)
         {
-            string s = "https://github.com/retaildevcrews/ngsa/blob/main/docs/ParameterValidation.md";
+            string s = "https://github.com/retaildevcrews/ngsa-dapr/blob/main/docs/ParameterValidation.md";
 
             path = path.ToLowerInvariant();
 
