@@ -32,28 +32,6 @@ namespace Ngsa.Application
         {
             DisplayAsciiArt(args);
 
-            DateTime until = DateTime.Now.AddSeconds(90);
-
-            Dapr.Client.DaprClient client = new Dapr.Client.DaprClientBuilder().Build();
-
-            while (DateTime.Now < until)
-            {
-                try
-                {
-                    var data = client.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
-                    Console.WriteLine($"CosmosCollection: {data["CosmosCollection"]}");
-                    Console.WriteLine($"CosmosDatabase: {data["CosmosDatabase"]}");
-                    Console.WriteLine($"CosmosKey: {data["CosmosKey"]}");
-                    Console.WriteLine($"CosmosUrl: {data["CosmosUrl"]}");
-                    break;
-                }
-                catch
-                {
-                    Console.WriteLine("retrying dapr");
-                    Thread.Sleep(100);
-                }
-            }
-
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
             root.Handler = CommandHandler.Create<Config>(RunApp);
@@ -65,6 +43,30 @@ namespace Ngsa.Application
         // load secrets from volume
         private static void LoadSecrets()
         {
+            // TODO - move this - testing dapr access
+            if (Config.Dapr)
+            {
+                Dapr.Client.DaprClient client = new Dapr.Client.DaprClientBuilder().Build();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    try
+                    {
+                        var data = client.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
+                        Console.WriteLine($"CosmosCollection: {data["CosmosCollection"]}");
+                        Console.WriteLine($"CosmosDatabase: {data["CosmosDatabase"]}");
+                        Console.WriteLine($"CosmosKey: {data["CosmosKey"]}");
+                        Console.WriteLine($"CosmosUrl: {data["CosmosUrl"]}");
+                        break;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("retrying dapr");
+                        Thread.Sleep(100);
+                    }
+                }
+            }
+
             if (Config.InMemory)
             {
                 Config.Secrets = new Secrets
