@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Ngsa.Application.Model;
-using Ngsa.Middleware;
 
 namespace Ngsa.Application
 {
