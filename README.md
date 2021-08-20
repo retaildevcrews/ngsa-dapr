@@ -1,100 +1,31 @@
-# NGSA App
+# NGSA App with dapr
 
-NGSA App is inteneded for platform testing and monitoring in one or many Kubernetes clusters and/or cloud deployments.
+## Using Visual Studio Codespaces
 
-## Prerequisites
+- Open this repo with GitHub Codespaces
+- From the Codespace zsh window
 
-- Bash shell (tested on Visual Studio Codespaces, Mac, Ubuntu, Windows with WSL2)
-  - Will not work with WSL1 or Cloud Shell
-- Azure CLI ([download](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest))
-- Docker CLI ([download](https://docs.docker.com/install/))
-- .NET 5.0 ([download](https://docs.microsoft.com/en-us/dotnet/core/install/))
-- Visual Studio Code (optional) ([download](https://code.visualstudio.com/download))
-
-## Ngsa-app Usage
-
-```
-Usage:
-  Ngsa.Application [options]
-  
-Options:
-  -a, --app-type <App|WebAPI>                                                      Application Type [default: App]
-  -p, --prometheus                                                                 Send metrics to Prometheus [default: False]
-  -m, --in-memory                                                                  Use in-memory database [default: False]
-  -n, --no-cache                                                                   Don't cache results [default: False]
-  --url-prefix <url-prefix>                                                        URL prefix for ingress mapping [default: ]
-  --port <port>                                                                    Listen Port [default: 8080]
-  -d, --cache-duration <cache-duration>                                            Cache for duration (seconds) [default: 300]
-  --burst-target <burst-target>                                                    Target level for bursting metrics (int) [default: 60]
-  --burst-max <burst-max>                                                          Max level for bursting metrics (int) [default: 80]   
-  --retries <retries>                                                              Cosmos 429 retries [default: 10]
-  --timeout <timeout>                                                              Request timeout [default: 10]
-  -s, --data-service <data-service>                                                Data Service URL [default: ]
-  -v, --secrets-volume <secrets-volume>                                            Secrets Volume Path [default: secrets]
-  -z, --zone <zone>                                                                Zone for log [default: dev]
-  -r, --region <region>                                                            Region for log [default: dev]
-  -l, --log-level <Critical|Debug|Error|Information|None|Trace|Warning>            Log Level [default: Error]
-  -q, --request-log-level <Critical|Debug|Error|Information|None|Trace|Warning>    Request Log Level [default: Information]
-  --dry-run                                                                        Validates configuration
-  --version                                                                        Show version information
-  -?, -h, --help                                                                   Show help and usage information
-```
-
-## Run the Application
-
-### Using Visual Studio Codespaces
-
-> Visual Studio Codespaces is the easiest way to evaluate ngsa. 
-
-TODO: Describe opening and running a codespaces
-
-### Using bash shell
-
-> This will work from a terminal in Visual Studio Codespaces as well
-
-1. Clone the repo
-
-> git clone https://github.com/retaildevcrews/ngsa-app.git
-
-2. Change to the app root directory
-
-> cd ngsa-app
-
-3. Run the application in memory mode
-
-  Running the application in memory mode allows us to run the application without setting up the rest of the supporting infrastructure.
+### Build, deploy and validate the app
 
 ```bash
 
-# run the application
-dotnet run -- -m
-```
+# build the app
+make build
 
- You should see the following response:
- > Hosting environment: Production
-Content root path: /mnt/c/Users/t-anbassey/Source/ngsa-app
-Now listening on: http://[::]:8080
-Application started. Press Ctrl+C to shut down.
+# deploy the app
+make deploy
 
-### Testing the application
+# check the logs for the secrets
+# you may have to retry as the app starts
+make logs
 
-Open a new bash shell
+# check the endpoint
+make check
 
-> Visual Studio Codespaces allows you to open multiple shells by clicking on the `Split Terminal` icon
-
-```bash
-
-# test the application
-
-# test using httpie (installed automatically in Codespaces)
-http localhost:4120/version
-
-# test using curl
-curl localhost:4120/version
+# run a web validate test
+make test
 
 ```
-
-Stop ngsa by typing Ctrl-C or the stop button if run via F5
 
 ### Engineering Docs
 
