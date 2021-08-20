@@ -8,6 +8,10 @@
 
     ```bash
 
+    # check the status file until setup completes
+    cat ~/status
+
+    # check the redis pod
     kubectl get pods
 
     ```
@@ -17,10 +21,7 @@
   ```text
 
     NAME               READY   STATUS    RESTARTS   AGE
-  redis-replicas-0   1/1     Running   0          100s
   redis-master-0     1/1     Running   0          100s
-  redis-replicas-1   1/1     Running   0          56s
-  redis-replicas-2   1/1     Running   0          28s
 
   ```
 
@@ -32,11 +33,7 @@
 make deploy
 
 # check the logs for the secrets
-# you may have to retry as the app starts
 make logs
-
-# check the endpoint
-make check
 
 # run a web validate test
 make test
