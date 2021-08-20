@@ -1,4 +1,4 @@
-.PHONY: help build deploy check logs jumpbox
+.PHONY: help build deploy check logs test jumpbox
 
 help :
 	@echo "Usage:"
@@ -41,3 +41,7 @@ deploy : build
 
 	# deploy the app
 	@kubectl apply -f deploy/ngsa.yaml
+
+test :
+	# run a web validate test
+	cd webv && webv --server localhost:30080 --files benchmark.json --verbose

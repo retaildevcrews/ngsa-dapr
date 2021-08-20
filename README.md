@@ -31,10 +31,7 @@
 
 ```bash
 
-# build the app
-make build
-
-# deploy the app
+# build and deploy the app
 make deploy
 
 # check the logs for the secrets
