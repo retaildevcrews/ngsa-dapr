@@ -37,5 +37,8 @@ logs :
 	kubectl logs --selector=app=ngsa -c app
 
 deploy :
+	# delete the app
+	@-kubectl delete -f deploy/ngsa.yaml
+
 	# deploy the app
 	@kubectl apply -f deploy/ngsa.yaml
