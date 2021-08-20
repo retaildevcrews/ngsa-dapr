@@ -64,15 +64,8 @@ namespace Ngsa.Application.Controllers
                 return ResultHandler.CreateResult(list, RequestLogger.GetPathAndQuerystring(Request));
             }
 
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Read<string>(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                // return exact byte size
-                res = await ResultHandler.Handle(App.Config.CacheDal.GetBenchmarkDataAsync(size), Logger).ConfigureAwait(false);
-            }
+            // return exact byte size
+            res = await ResultHandler.Handle(App.Config.CacheDal.GetBenchmarkDataAsync(size), Logger).ConfigureAwait(false);
 
             return res;
         }

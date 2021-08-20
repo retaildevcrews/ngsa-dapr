@@ -6,22 +6,8 @@ using Ngsa.Application.DataAccessLayer;
 
 namespace Ngsa.Application
 {
-    public enum AppType
-    {
-        /// <summary>
-        /// Run as full app
-        /// </summary>
-        App,
-
-        /// <summary>
-        /// Run as data service
-        /// </summary>
-        WebAPI,
-    }
-
     public class Config
     {
-        public AppType AppType { get; set; } = AppType.App;
         public string DataService { get; set; } = string.Empty;
         public string SecretsVolume { get; set; } = "secrets";
         public LogLevel LogLevel { get; set; } = LogLevel.Warning;
@@ -43,10 +29,10 @@ namespace Ngsa.Application
         public InMemoryDal CacheDal { get; set; }
         public IDAL CosmosDal { get; set; }
         public string UrlPrefix { get; set; }
+        public bool Dapr { get; set; }
 
         public void SetConfig(Config config)
         {
-            AppType = config.AppType;
             IsLogLevelSet = config.IsLogLevelSet;
             DryRun = config.DryRun;
             InMemory = config.InMemory;

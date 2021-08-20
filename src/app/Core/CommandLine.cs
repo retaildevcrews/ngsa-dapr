@@ -91,7 +91,6 @@ namespace Ngsa.Application
             };
 
             // add the options
-            root.AddOption(EnvVarOption(new string[] { "--app-type", "-a" }, "Application Type", AppType.App));
             root.AddOption(EnvVarOption(new string[] { "--prometheus", "-p" }, "Send metrics to Prometheus", false));
             root.AddOption(EnvVarOption(new string[] { "--in-memory", "-m" }, "Use in-memory database", false));
             root.AddOption(EnvVarOption(new string[] { "--no-cache", "-n" }, "Don't cache results", false));
@@ -106,6 +105,7 @@ namespace Ngsa.Application
             root.AddOption(EnvVarOption(new string[] { "--region", "-r" }, "Region for log", "dev"));
             root.AddOption(EnvVarOption(new string[] { "--log-level", "-l" }, "Log Level", LogLevel.Error));
             root.AddOption(EnvVarOption(new string[] { "--request-log-level", "-q" }, "Request Log Level", LogLevel.Information));
+            root.AddOption(EnvVarOption(new string[] { "--dapr" }, "Use DAPR", false));
             root.AddOption(new Option<bool>(new string[] { "--dry-run" }, "Validates configuration"));
 
             // validate dependencies
@@ -127,7 +127,6 @@ namespace Ngsa.Application
             try
             {
                 // get the values to validate
-                AppType appType = result.Children.FirstOrDefault(c => c.Symbol.Name == "app-type") is OptionResult appTypeRes ? appTypeRes.GetValueOrDefault<AppType>() : AppType.App;
                 string secrets = result.Children.FirstOrDefault(c => c.Symbol.Name == "secrets-volume") is OptionResult secretsRes ? secretsRes.GetValueOrDefault<string>() : string.Empty;
                 string dataService = result.Children.FirstOrDefault(c => c.Symbol.Name == "data-service") is OptionResult dsRes ? dsRes.GetValueOrDefault<string>() : string.Empty;
                 string urlPrefix = result.Children.FirstOrDefault(c => c.Symbol.Name == "urlPrefix") is OptionResult urlRes ? urlRes.GetValueOrDefault<string>() : string.Empty;
@@ -150,38 +149,8 @@ namespace Ngsa.Application
                     }
                 }
 
-                // validate data-service
-                if (appType == AppType.WebAPI)
-                {
-                    if (string.IsNullOrWhiteSpace(dataService))
-                    {
-                        msg += "--data-service cannot be empty\n";
-                    }
-                    else
-                    {
-                        string ds = dataService.ToLowerInvariant().Trim();
-
-                        if (!ds.StartsWith("http://") &&
-                            !ds.StartsWith("https://") &&
-                            !ds.Contains(' ') &&
-                            !ds.Contains('\t') &&
-                            !ds.Contains('\n') &&
-                            !ds.Contains('\r'))
-                        {
-                            msg += "--data-service is invalid";
-                        }
-
-                        ds = ds.Replace("http://", string.Empty).Replace("https://", string.Empty);
-
-                        if (string.IsNullOrEmpty(ds))
-                        {
-                            msg += "--data-service is invalid";
-                        }
-                    }
-                }
-
                 // validate secrets volume
-                if (!inMemory && appType == AppType.App)
+                if (!inMemory)
                 {
                     if (string.IsNullOrWhiteSpace(secrets))
                     {
@@ -366,22 +335,19 @@ namespace Ngsa.Application
             Config.SetConfig(config);
 
             // create data access layer
-            if (Config.AppType == AppType.App)
+            LoadSecrets();
+
+            // load the cache
+            Config.CacheDal = new DataAccessLayer.InMemoryDal();
+
+            // create the cosomos data access layer
+            if (Config.InMemory)
             {
-                LoadSecrets();
-
-                // load the cache
-                Config.CacheDal = new DataAccessLayer.InMemoryDal();
-
-                // create the cosomos data access layer
-                if (Config.InMemory)
-                {
-                    Config.CosmosDal = Config.CacheDal;
-                }
-                else
-                {
-                    Config.CosmosDal = new DataAccessLayer.CosmosDal(Config.Secrets, Config);
-                }
+                Config.CosmosDal = Config.CacheDal;
+            }
+            else
+            {
+                Config.CosmosDal = new DataAccessLayer.CosmosDal(Config.Secrets, Config);
             }
 
             SetLoggerConfig();
@@ -407,29 +373,20 @@ namespace Ngsa.Application
         private static int DoDryRun()
         {
             Console.WriteLine($"Version            {VersionExtension.Version}");
-            Console.WriteLine($"Application Type   {Config.AppType}");
             Console.WriteLine($"Use Prometheus     {Config.Prometheus}");
 
-            if (Config.AppType == AppType.WebAPI)
-            {
-                Console.WriteLine($"Data Service       {Config.DataService}");
-                Console.WriteLine($"Request Timeout    {Config.Timeout}");
-            }
-            else
-            {
-                Console.WriteLine($"In Memory          {Config.InMemory}");
-                Console.WriteLine($"No Cache           {Config.NoCache}");
+            Console.WriteLine($"In Memory          {Config.InMemory}");
+            Console.WriteLine($"No Cache           {Config.NoCache}");
 
-                if (!Config.InMemory)
-                {
-                    Console.WriteLine($"Cosmos Server      {Config.Secrets.CosmosServer}");
-                    Console.WriteLine($"Cosmos Database    {Config.Secrets.CosmosDatabase}");
-                    Console.WriteLine($"Cosmos Collection  {Config.Secrets.CosmosCollection}");
-                    Console.WriteLine($"Cosmos Key         Length({Config.Secrets.CosmosKey.Length})");
-                    Console.WriteLine($"Cosmos Retries     {Config.Retries}");
-                    Console.WriteLine($"Request Timeout    {Config.Timeout}");
-                    Console.WriteLine($"Secrets Volume     {Config.Secrets.Volume}");
-                }
+            if (!Config.InMemory)
+            {
+                Console.WriteLine($"Cosmos Server      {Config.Secrets.CosmosServer}");
+                Console.WriteLine($"Cosmos Database    {Config.Secrets.CosmosDatabase}");
+                Console.WriteLine($"Cosmos Collection  {Config.Secrets.CosmosCollection}");
+                Console.WriteLine($"Cosmos Key         Length({Config.Secrets.CosmosKey.Length})");
+                Console.WriteLine($"Cosmos Retries     {Config.Retries}");
+                Console.WriteLine($"Request Timeout    {Config.Timeout}");
+                Console.WriteLine($"Secrets Volume     {Config.Secrets.Volume}");
             }
 
             Console.WriteLine($"Region             {Config.Region}");

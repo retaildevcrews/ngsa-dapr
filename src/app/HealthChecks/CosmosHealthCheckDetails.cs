@@ -81,10 +81,7 @@ namespace Ngsa.Application
 
             try
             {
-                if (App.Config.AppType == AppType.App)
-                {
-                    _ = (await dal.GetGenresAsync().ConfigureAwait(false)).ToList<string>();
-                }
+                _ = (await dal.GetGenresAsync().ConfigureAwait(false)).ToList<string>();
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -110,10 +107,7 @@ namespace Ngsa.Application
 
             try
             {
-                if (App.Config.AppType == AppType.App)
-                {
-                    _ = await dal.GetMovieAsync(movieId).ConfigureAwait(false);
-                }
+                _ = await dal.GetMovieAsync(movieId).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -142,10 +136,7 @@ namespace Ngsa.Application
 
             try
             {
-                if (App.Config.AppType == AppType.App)
-                {
-                    _ = (await dal.GetMoviesAsync(movieQuery).ConfigureAwait(false)).ToList<Movie>();
-                }
+                _ = (await dal.GetMoviesAsync(movieQuery).ConfigureAwait(false)).ToList<Movie>();
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }
@@ -171,10 +162,7 @@ namespace Ngsa.Application
 
             try
             {
-                if (App.Config.AppType == AppType.App)
-                {
-                    _ = await dal.GetActorAsync(actorId).ConfigureAwait(false);
-                }
+                _ = await dal.GetActorAsync(actorId).ConfigureAwait(false);
 
                 return BuildHealthzCheck(path, MaxResponseTime / 2, null, data, name);
             }
@@ -203,10 +191,7 @@ namespace Ngsa.Application
 
             try
             {
-                if (App.Config.AppType == AppType.App)
-                {
-                    _ = (await dal.GetActorsAsync(actorQuery).ConfigureAwait(false)).ToList<Actor>();
-                }
+                _ = (await dal.GetActorsAsync(actorQuery).ConfigureAwait(false)).ToList<Actor>();
 
                 return BuildHealthzCheck(path, MaxResponseTime, null, data, name);
             }

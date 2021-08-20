@@ -61,15 +61,8 @@ namespace Ngsa.Application.Controllers
 
             IActionResult res;
 
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Read<List<Movie>>(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                // get the result
-                res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), Logger).ConfigureAwait(false);
-            }
+            // get the result
+            res = await ResultHandler.Handle(dal.GetMoviesAsync(movieQueryParameters), Logger).ConfigureAwait(false);
 
             return res;
         }
@@ -98,14 +91,7 @@ namespace Ngsa.Application.Controllers
 
             IActionResult res;
 
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Read<Movie>(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), Logger).ConfigureAwait(false);
-            }
+            res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), Logger).ConfigureAwait(false);
 
             return res;
         }
@@ -128,41 +114,30 @@ namespace Ngsa.Application.Controllers
                 Movie mOrig = App.Config.CacheDal.GetMovie(movieId.Replace("zz", "tt"));
                 Movie m = mOrig.DuplicateForUpsert();
 
-                IActionResult res;
+                await App.Config.CacheDal.UpsertMovieAsync(m);
 
-                if (App.Config.AppType == AppType.WebAPI)
+                // upsert into Cosmos
+                if (!App.Config.InMemory)
                 {
-                    res = await DataService.Post(Request, m).ConfigureAwait(false);
-                }
-                else
-                {
-                    await App.Config.CacheDal.UpsertMovieAsync(m);
-
-                    // upsert into Cosmos
-                    if (!App.Config.InMemory)
+                    try
                     {
-                        try
-                        {
-                            await App.Config.CosmosDal.UpsertMovieAsync(m).ConfigureAwait(false);
-                        }
-                        catch (CosmosException ce)
-                        {
-                            Logger.LogError("UpsertMovieAsync", ce.ActivityId, new LogEventId((int)ce.StatusCode, "CosmosException"), ex: ce);
-
-                            return ResultHandler.CreateResult(Logger.ErrorMessage, ce.StatusCode);
-                        }
-                        catch (Exception ex)
-                        {
-                            // log and return 500
-                            Logger.LogError("UpsertMovieAsync", "Exception", NgsaLog.LogEvent500, ex: ex);
-                            return ResultHandler.CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
-                        }
+                        await App.Config.CosmosDal.UpsertMovieAsync(m).ConfigureAwait(false);
                     }
+                    catch (CosmosException ce)
+                    {
+                        Logger.LogError("UpsertMovieAsync", ce.ActivityId, new LogEventId((int)ce.StatusCode, "CosmosException"), ex: ce);
 
-                    res = Ok(m);
+                        return ResultHandler.CreateResult(Logger.ErrorMessage, ce.StatusCode);
+                    }
+                    catch (Exception ex)
+                    {
+                        // log and return 500
+                        Logger.LogError("UpsertMovieAsync", "Exception", NgsaLog.LogEvent500, ex: ex);
+                        return ResultHandler.CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
+                    }
                 }
 
-                return res;
+                return Ok(m);
             }
             catch
             {
@@ -189,37 +164,30 @@ namespace Ngsa.Application.Controllers
 
             IActionResult res;
 
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Delete(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                await App.Config.CacheDal.DeleteMovieAsync(movieId);
-                res = NoContent();
+            await App.Config.CacheDal.DeleteMovieAsync(movieId);
+            res = NoContent();
 
-                if (!App.Config.InMemory)
+            if (!App.Config.InMemory)
+            {
+                try
                 {
-                    try
+                    // Delete from Cosmos
+                    await App.Config.CosmosDal.DeleteMovieAsync(movieId).ConfigureAwait(false);
+                }
+                catch (CosmosException ce)
+                {
+                    // log and return Cosmos status code
+                    if (ce.StatusCode != HttpStatusCode.NotFound)
                     {
-                        // Delete from Cosmos
-                        await App.Config.CosmosDal.DeleteMovieAsync(movieId).ConfigureAwait(false);
+                        Logger.LogError("DeleteMovieAsync", ce.ActivityId, new LogEventId((int)ce.StatusCode, "CosmosException"), ex: ce);
+                        return ResultHandler.CreateResult(Logger.ErrorMessage, ce.StatusCode);
                     }
-                    catch (CosmosException ce)
-                    {
-                        // log and return Cosmos status code
-                        if (ce.StatusCode != HttpStatusCode.NotFound)
-                        {
-                            Logger.LogError("DeleteMovieAsync", ce.ActivityId, new LogEventId((int)ce.StatusCode, "CosmosException"), ex: ce);
-                            return ResultHandler.CreateResult(Logger.ErrorMessage, ce.StatusCode);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // log and return 500
-                        Logger.LogError("DeleteMovieAsync", "Exception", NgsaLog.LogEvent500, ex: ex);
-                        return ResultHandler.CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    // log and return 500
+                    Logger.LogError("DeleteMovieAsync", "Exception", NgsaLog.LogEvent500, ex: ex);
+                    return ResultHandler.CreateResult("Internal Server Error", HttpStatusCode.InternalServerError);
                 }
             }
 

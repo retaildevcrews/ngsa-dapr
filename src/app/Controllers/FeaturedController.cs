@@ -45,26 +45,19 @@ namespace Ngsa.Application.Controllers
         {
             IActionResult res;
 
-            if (App.Config.AppType == AppType.WebAPI)
+            List<string> featuredMovies = await App.Config.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
+
+            if (featuredMovies != null && featuredMovies.Count > 0)
             {
-                res = await DataService.Read<Movie>(Request).ConfigureAwait(false);
+                // get random featured movie by movieId
+                string movieId = featuredMovies[DateTime.UtcNow.Millisecond % featuredMovies.Count];
+
+                // get movie by movieId
+                res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), Logger).ConfigureAwait(false);
             }
             else
             {
-                List<string> featuredMovies = await App.Config.CacheDal.GetFeaturedMovieListAsync().ConfigureAwait(false);
-
-                if (featuredMovies != null && featuredMovies.Count > 0)
-                {
-                    // get random featured movie by movieId
-                    string movieId = featuredMovies[DateTime.UtcNow.Millisecond % featuredMovies.Count];
-
-                    // get movie by movieId
-                    res = await ResultHandler.Handle(dal.GetMovieAsync(movieId), Logger).ConfigureAwait(false);
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return NotFound();
             }
 
             return res;

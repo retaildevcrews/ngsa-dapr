@@ -30,14 +30,7 @@ namespace Ngsa.Application.Controllers
         {
             IActionResult res;
 
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Read<List<string>>(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                res = await ResultHandler.Handle(App.Config.CosmosDal.GetGenresAsync(), Logger).ConfigureAwait(false);
-            }
+            res = await ResultHandler.Handle(App.Config.CosmosDal.GetGenresAsync(), Logger).ConfigureAwait(false);
 
             return res;
         }

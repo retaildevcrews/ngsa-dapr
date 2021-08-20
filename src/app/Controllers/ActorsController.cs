@@ -61,14 +61,7 @@ namespace Ngsa.Application.Controllers
 
             IActionResult res;
 
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Read<List<Actor>>(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), Logger).ConfigureAwait(false);
-            }
+            res = await ResultHandler.Handle(dal.GetActorsAsync(actorQueryParameters), Logger).ConfigureAwait(false);
 
             return res;
         }
@@ -99,14 +92,7 @@ namespace Ngsa.Application.Controllers
             IActionResult res;
 
             // return result
-            if (App.Config.AppType == AppType.WebAPI)
-            {
-                res = await DataService.Read<Actor>(Request).ConfigureAwait(false);
-            }
-            else
-            {
-                res = await ResultHandler.Handle(dal.GetActorAsync(actorId), Logger).ConfigureAwait(false);
-            }
+            res = await ResultHandler.Handle(dal.GetActorAsync(actorId), Logger).ConfigureAwait(false);
 
             return res;
         }

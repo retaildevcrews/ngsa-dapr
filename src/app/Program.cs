@@ -132,7 +132,7 @@ namespace Ngsa.Application
         // Log startup messages
         private static void LogStartup(NgsaLog logger)
         {
-            logger.LogInformation($"NGSA.{Config.AppType} Started", VersionExtension.Version);
+            logger.LogInformation($"Ngsa.Dapr Started", VersionExtension.Version);
         }
 
         // Build the web host
