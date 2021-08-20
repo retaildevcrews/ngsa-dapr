@@ -8,6 +8,9 @@
 
     ```bash
 
+    # bug - todo - Codespaces usually runs onCreate in a blocking mode
+    # it's currently not blocking - need to debug and see if that behavior has changed
+
     kubectl get pods
 
     ```
