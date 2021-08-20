@@ -22,7 +22,7 @@ dapr init -k --enable-mtls=false --wait
 # install redis
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install redis bitnami/redis
+helm install --set replica.replicaCount=0 redis bitnami/redis
 
 # redis config
 kubectl apply -f deploy/redis.yaml
