@@ -33,12 +33,55 @@ namespace Ngsa.Application
         {
             DisplayAsciiArt(args);
 
+            WaitForDapr();
+
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
             root.Handler = CommandHandler.Create<Config>(RunApp);
 
             // run the app
             return root.Invoke(args);
+        }
+
+        // wait for dapr sidecar to start
+        private static void WaitForDapr()
+        {
+            const string daprUrl = "http://127.0.0.1:3500/v1.0/healthz";
+
+            System.Net.Http.HttpClient client = new ();
+            int i = 0;
+
+            System.Net.Http.HttpResponseMessage resp = null;
+
+            // wait for dapr to start
+            while (true)
+            {
+                try
+                {
+                    resp = client.GetAsync(daprUrl).Result;
+
+                    if ((int)resp.StatusCode >= 500 || (int)resp.StatusCode < 300)
+                    {
+                        // dapr is ready
+                        Console.WriteLine($"{i}\t{(int)resp.StatusCode} dapr sidecar ready");
+                        resp.Dispose();
+                        return;
+                    }
+
+                    if (i > 10)
+                    {
+                        return;
+                    }
+                }
+                catch
+                {
+                }
+
+                // log and sleep
+                i++;
+                Console.WriteLine($"{i}\t{(int)resp.StatusCode} waiting for dapr sidecar");
+                Thread.Sleep(1000);
+            }
         }
 
         // load secrets from volume
