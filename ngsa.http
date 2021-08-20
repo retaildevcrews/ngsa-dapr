@@ -1,0 +1,14 @@
+# get version
+GET http://localhost:30080/version HTTP/1.1
+
+###
+
+# health check (full)
+GET http://localhost:30080/healthz/ietf HTTP/1.1
+
+###
+
+# get genres
+GET http://localhost:30080/api/genres HTTP/1.1
+
+###
