@@ -8,7 +8,14 @@ namespace Ngsa.Application
 {
     public enum AppType
     {
+        /// <summary>
+        /// Run as full app
+        /// </summary>
         App,
+
+        /// <summary>
+        /// Run as data service
+        /// </summary>
         WebAPI,
     }
 
