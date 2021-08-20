@@ -1,8 +1,9 @@
-.PHONY: help build check logs jumpbox
+.PHONY: help build deploy check logs jumpbox
 
 help :
 	@echo "Usage:"
 	@echo "   make build         - build the app"
+	@echo "   make deploy        - deploy the app"
 	@echo "   make check         - check the app endpoints"
 	@echo "   make logs          - check the app logs"
 	@echo "   make jumpbox       - deploy a 'jumpbox' pod"
@@ -35,11 +36,6 @@ jumpbox :
 logs :
 	kubectl logs --selector=app=ngsa -c app
 
-secrets :
-	@kubectl delete secret ngsa-secrets --ignore-not-found
-
-	@kubectl create secret generic ngsa-secrets \
-	  --from-literal=CosmosCollection=movies \
-	  --from-literal=CosmosDatabase=imdb \
-	  --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
-	  --from-literal=CosmosKey=${COSMOS_KEY}
+deploy :
+	# deploy the app
+	@kubectl apply -f deploy/ngsa.yaml
