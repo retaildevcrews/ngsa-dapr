@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
 ### copy the source and tests
 COPY src /src
 
-WORKDIR /src
+WORKDIR /src/app
 
 # build the app
 RUN dotnet publish -c Release -o /app
