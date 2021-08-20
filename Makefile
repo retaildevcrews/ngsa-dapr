@@ -37,10 +37,16 @@ logs :
 
 deploy : build
 	# delete the app (ignore any not found errors)
-	@-kubectl delete -f deploy/ngsa.yaml
+	@-kubectl delete -f deploy/ngsa.yaml >/dev/null 2>&1
+
+	# wait for redis
+	@kubectl wait pod redis-master-0  --for condition=ready --timeout=60s
 
 	# deploy the app
 	@kubectl apply -f deploy/ngsa.yaml
+
+	# wait for pods to start
+	@kubectl wait pod -l app=ngsa --for condition=ready --timeout=30s
 
 test :
 	# run a web validate test
