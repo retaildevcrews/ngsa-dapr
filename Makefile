@@ -42,4 +42,4 @@ secrets :
 	  --from-literal=CosmosCollection=movies \
 	  --from-literal=CosmosDatabase=imdb \
 	  --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
-	  --from-literal=CosmosKey=$COSMOS_KEY
+	  --from-literal=CosmosKey=${COSMOS_KEY}
