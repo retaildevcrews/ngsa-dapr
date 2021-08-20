@@ -14,6 +14,11 @@ docker network connect dapr k3d-registry.localhost
 
 # create k3d cluster
 k3d cluster create --registry-use k3d-registry.localhost:5000 --config deploy/k3d.yaml
+
+# build and push the image
+docker build . -t k3d-registry.localhost:5000/ngsa-dapr:local
+docker push k3d-registry.localhost:5000/ngsa-dapr:local
+
 kubectl wait node --for condition=ready --all --timeout=60s
 
 # install dapr
@@ -27,9 +32,6 @@ helm install --set replica.replicaCount=0 redis bitnami/redis
 # redis config
 kubectl apply -f deploy/redis.yaml
 
-# wait for redis master to start
-# kubectl wait pod redis-master-0  --for condition=ready --timeout=60s
-
 # add the secrets
 kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosCollection=movies \
@@ -37,7 +39,7 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
   --from-literal=CosmosKey=${COSMOS_KEY}
 
-docker pull mcr.microsoft.com/dotnet/sdk:5.0-alpine
-docker pull mcr.microsoft.com/dotnet/aspnet:5.0-alpine
+# wait for redis to start
+kubectl wait pod redis-master-0  --for condition=ready --timeout=60s
 
 echo "on-create complete" >> ~/status
