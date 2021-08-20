@@ -7,6 +7,7 @@ using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -42,6 +43,30 @@ namespace Ngsa.Application
         // load secrets from volume
         private static void LoadSecrets()
         {
+            // TODO - move this - testing dapr access
+            if (Config.Dapr)
+            {
+                Dapr.Client.DaprClient client = new Dapr.Client.DaprClientBuilder().Build();
+
+                while (true)
+                {
+                    try
+                    {
+                        var data = client.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
+                        Console.WriteLine($"CosmosCollection: {data["CosmosCollection"]}");
+                        Console.WriteLine($"CosmosDatabase: {data["CosmosDatabase"]}");
+                        Console.WriteLine($"CosmosKey: length {data["CosmosKey"].Length}");
+                        Console.WriteLine($"CosmosUrl: {data["CosmosUrl"]}");
+                        break;
+                    }
+                    catch
+                    {
+                        Console.WriteLine("retrying dapr");
+                        Thread.Sleep(1000);
+                    }
+                }
+            }
+
             if (Config.InMemory)
             {
                 Config.Secrets = new Secrets

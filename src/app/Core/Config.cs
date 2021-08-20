@@ -33,6 +33,7 @@ namespace Ngsa.Application
 
         public void SetConfig(Config config)
         {
+            Dapr = config.Dapr;
             IsLogLevelSet = config.IsLogLevelSet;
             DryRun = config.DryRun;
             InMemory = config.InMemory;
