@@ -15,6 +15,18 @@
 
     ```
 
+- Results
+
+  ```text
+
+    NAME               READY   STATUS    RESTARTS   AGE
+  redis-replicas-0   1/1     Running   0          100s
+  redis-master-0     1/1     Running   0          100s
+  redis-replicas-1   1/1     Running   0          56s
+  redis-replicas-2   1/1     Running   0          28s
+
+  ```
+
 ### Build, deploy and validate the app
 
 ```bash
