@@ -4,6 +4,13 @@
 
 - Open this repo with GitHub Codespaces
 - From the Codespace zsh window
+- Wait for the cluster and Redis to start
+
+    ```bash
+
+    kubectl get pods
+
+    ```
 
 ### Build, deploy and validate the app
 
