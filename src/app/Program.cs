@@ -55,7 +55,7 @@ namespace Ngsa.Application
                         var data = client.GetSecretAsync("kubernetes", "ngsa-secrets").Result;
                         Console.WriteLine($"CosmosCollection: {data["CosmosCollection"]}");
                         Console.WriteLine($"CosmosDatabase: {data["CosmosDatabase"]}");
-                        Console.WriteLine($"CosmosKey: {data["CosmosKey"]}");
+                        Console.WriteLine($"CosmosKey: length {data["CosmosKey"].Length}");
                         Console.WriteLine($"CosmosUrl: {data["CosmosUrl"]}");
                         break;
                     }
