@@ -37,6 +37,8 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosUrl=https://ngsa-pre-cosmos.documents.azure.com:443/ \
   --from-literal=CosmosKey=${COSMOS_KEY}
 
+unset COSMOS_KEY
+
 docker pull mcr.microsoft.com/dotnet/sdk:5.0-alpine
 docker pull mcr.microsoft.com/dotnet/aspnet:5.0-alpine
 
