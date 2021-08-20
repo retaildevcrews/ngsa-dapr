@@ -10,7 +10,7 @@ help :
 build :
 	# building and pushing docker image
 	@docker system prune -f
-	@ocker build . -t k3d-registry.localhost:5000/ngsa-dapr:local
+	@docker build . -t k3d-registry.localhost:5000/ngsa-dapr:local
 	@docker push k3d-registry.localhost:5000/ngsa-dapr:local
 
 check :
