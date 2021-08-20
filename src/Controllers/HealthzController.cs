@@ -59,8 +59,6 @@ namespace Ngsa.Application.Controllers
                 StatusCode = res.Status == HealthStatus.Unhealthy ? (int)System.Net.HttpStatusCode.ServiceUnavailable : (int)System.Net.HttpStatusCode.OK,
             };
 
-            CpuCounter.AddBurstHeader(Response.HttpContext);
-
             return result;
         }
 
