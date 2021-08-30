@@ -5,6 +5,10 @@ echo "on-create start" >> ~/status
 # prevent the dependency popup
 dotnet restore src/app/Ngsa.Dapr.csproj
 
+# redis dir
+sudo mkdir -p /data/data
+sudo chown -R 1001:1001 /data
+
 # create a network
 docker network create dapr
 
@@ -24,12 +28,7 @@ kubectl wait node --for condition=ready --all --timeout=60s
 # install dapr
 dapr init -k --enable-mtls=false --wait
 
-# install redis
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-helm install --set replica.replicaCount=0 redis bitnami/redis
-
-# redis config
+# deploy redis
 kubectl apply -f deploy/redis.yaml
 
 # add the secrets
@@ -40,6 +39,6 @@ kubectl create secret generic ngsa-secrets \
   --from-literal=CosmosKey=${COSMOS_KEY}
 
 # wait for redis to start
-kubectl wait pod redis-master-0  --for condition=ready --timeout=60s
+kubectl wait pod -l app=redis --for condition=ready --timeout=60s
 
 echo "on-create complete" >> ~/status

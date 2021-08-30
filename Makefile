@@ -40,7 +40,7 @@ deploy : build
 	@-kubectl delete -f deploy/ngsa.yaml >/dev/null 2>&1
 
 	# wait for redis
-	@kubectl wait pod redis-master-0  --for condition=ready --timeout=60s
+	@kubectl wait pod -l app=redis --for condition=ready --timeout=60s
 
 	# deploy the app
 	@kubectl apply -f deploy/ngsa.yaml
