@@ -1,10 +1,6 @@
 name: Build NGSA-Dapr
 
 on:
-  schedule:
-    # Run Sunday at 6:00 AM UTC
-    - cron: "0 6 * * 0"
-
   push:
     branches:
       - main
@@ -35,7 +31,7 @@ jobs:
 
     - name: Docker Build
       run: |
-        docker build . --progress auto -t image
+        docker build . -t image
 
     - name: Docker Run and Test
       run: |
@@ -53,7 +49,7 @@ jobs:
             # wait up to 30 seconds for web server to start
             while true
             do
-                if curl localhost:8080/version ; then
+                if curl -s localhost:8080/version ; then
                     echo -e "\n web server is running"
                     break
                 fi
