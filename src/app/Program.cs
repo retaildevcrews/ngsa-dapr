@@ -6,6 +6,7 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Dapr.Client;
 using Microsoft.AspNetCore;
@@ -33,7 +34,10 @@ namespace Ngsa.Application
         {
             DisplayAsciiArt(args);
 
-            WaitForDapr();
+            if (args.Contains("--dapr"))
+            {
+                WaitForDapr();
+            }
 
             // build the System.CommandLine.RootCommand
             RootCommand root = BuildRootCommand();
