@@ -24,6 +24,10 @@ spec:
           args:
             - --in-memory
             - --prometheus
+            - --zone
+            - dev
+            - --region
+            - dev
 
           ports:
             - name: http
