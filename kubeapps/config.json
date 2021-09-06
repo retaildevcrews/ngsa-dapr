@@ -1,0 +1,10 @@
+{
+    "name": "ngsa",
+    "namespace": "default",
+    "imageName": "k3d-registry.localhost:5000/ngsa",
+    "imageTag": "local",
+    "port": 8080,
+    "nodePort": 30082,
+    "probePath": "/version",
+    "targets": [ "local" ] 
+}

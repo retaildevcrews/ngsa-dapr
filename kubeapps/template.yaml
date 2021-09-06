@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{gitops.name}}
+  namespace: {{gitops.namespace}}
+  labels:
+    app.kubernetes.io/name: {{gitops.name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{gitops.name}}
+  template:
+    metadata:
+      labels:
+        app: {{gitops.name}}
+        version: local-{{gitops.version}}
+        deploy: {{gitops.deploy}}
+    spec:
+      containers:
+        - name: app
+          image: {{gitops.imageName}}:{{gitops.imageTag}}
+          imagePullPolicy: Always
+          args:
+            - --in-memory
+            - --prometheus
+
+          ports:
+            - name: http
+              containerPort: {{gitops.port}}
+              protocol: TCP
+
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{gitops.name}}
+  namespace: {{gitops.namespace}}
+spec:
+  type: NodePort
+  ports:
+    - port: {{gitops.port}}
+      targetPort: http
+      nodePort: {{gitops.nodePort}}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{gitops.name}}
