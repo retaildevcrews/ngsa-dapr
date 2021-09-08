@@ -5,6 +5,7 @@
     "imageTag": "local",
     "port": 8080,
     "nodePort": 30082,
-    "probePath": "/version",
+    "readinessProbe": "/version",
+    "livenessProbe": "/healthz",
     "targets": [ "local" ] 
 }
